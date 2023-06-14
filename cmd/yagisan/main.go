@@ -14,9 +14,9 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"*"}}))
-	
-	r.Get(rootPath + "/", pingHandler)
+		AllowedOrigins: []string{"*"}}))
+
+	r.Get(rootPath+"/", pingHandler)
 	// r.Post(rootPath + "/create", createHandler)
 	// r.Post(rootPath + "/forget", forgetHandler)
 

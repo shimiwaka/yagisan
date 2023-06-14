@@ -6,5 +6,6 @@ import (
 )
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
+
 	fmt.Fprintln(w, "Hello World!")
 }
