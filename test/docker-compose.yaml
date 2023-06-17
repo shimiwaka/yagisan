@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: "rootpass"
+      MYSQL_USER: "testuser"
+      MYSQL_PASSWORD: "testpass"
+      MYSQL_DATABASE: "testdb"
+    ports:
+      - "3307:3306"
