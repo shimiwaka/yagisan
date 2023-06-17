@@ -35,7 +35,7 @@ func main() {
 		return
 	}
 
-	// db.Exec("DROP TABLE boxs")
+	db.Exec("DROP TABLE boxes")
 	db.AutoMigrate(&schema.Box{})
 
 	// db.Exec("DROP TABLE questions")

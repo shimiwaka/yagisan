@@ -8,6 +8,7 @@ type Box struct {
 	gorm.Model `json:"-"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
+	Description   string `json:"description"`
 }
 
 type Question struct {
