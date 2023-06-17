@@ -28,6 +28,13 @@ type Answer struct {
 
 type Block struct {
 	gorm.Model `json:"-"`
-	Mail       string `json:"mail"`
-	IP         string `json:"ip"`
+	Box        uint   `json:"box"`
+	Type       int `json:"type"`
+	Value      int `json:"value"`
+}
+
+type BlockMail struct {
+	gorm.Model `json:"-"`
+	Box        uint   `json:"box"`
+	Value      int `json:"value"`
 }
