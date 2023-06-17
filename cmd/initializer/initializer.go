@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/yaml.v2"
 	"github.com/jinzhu/gorm"
-	"github.com/shimiwaka/yagisan/schema"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/shimiwaka/yagisan/schema"
+	"gopkg.in/yaml.v2"
 )
 
 type Settings struct {
 	Username string `yaml:"db_username"`
-	Pass string `yaml:"db_pass"`
-	Host string `yaml:"db_host"`
-	Port int `yaml:"db_port"`
-	Name string `yaml:"db_name"`
+	Pass     string `yaml:"db_pass"`
+	Host     string `yaml:"db_host"`
+	Port     int    `yaml:"db_port"`
+	Name     string `yaml:"db_name"`
 }
 
 func main() {
@@ -46,7 +46,7 @@ func main() {
 
 	// db.Exec("DROP TABLE blocks")
 	db.AutoMigrate(&schema.Block{})
-	
+
 	// db.Exec("DROP TABLE blockmails")
 	db.AutoMigrate(&schema.BlockMail{})
 

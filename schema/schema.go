@@ -5,10 +5,11 @@ import (
 )
 
 type Box struct {
-	gorm.Model `json:"-"`
-	Username   string `json:"username"`
-	Password   string `json:"password"`
-	Description   string `json:"description"`
+	gorm.Model  `json:"-"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	Email       string `jsoin:"email"`
+	Description string `json:"description"`
 }
 
 type Question struct {
@@ -29,25 +30,25 @@ type Answer struct {
 
 type Block struct {
 	gorm.Model `json:"-"`
-	Box        uint   `json:"box"`
-	Type       int `json:"type"`
-	Value      int `json:"value"`
+	Box        uint `json:"box"`
+	Type       int  `json:"type"`
+	Value      int  `json:"value"`
 }
 
 type BlockMail struct {
 	gorm.Model `json:"-"`
-	Box        uint   `json:"box"`
-	Value      int `json:"value"`
+	Box        uint `json:"box"`
+	Value      int  `json:"value"`
 }
 
 type AccessToken struct {
 	gorm.Model `json:"-"`
 	Box        uint   `json:"box"`
-	Token	string `json:"token"`
+	Token      string `json:"token"`
 }
 
 type PasswordResetToken struct {
 	gorm.Model `json:"-"`
 	Box        uint   `json:"box"`
-	Token	string `json:"token"`
+	Token      string `json:"token"`
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+
 	// "net/http/cgi"
 	"os"
 
@@ -17,7 +19,7 @@ func main() {
 		AllowedOrigins: []string{"*"}}))
 
 	r.Get(rootPath+"/", pingHandler)
-	// r.Post(rootPath + "/create", createHandler)
+	r.Post(rootPath+"/register", registerHandler)
 	// r.Post(rootPath + "/forget", forgetHandler)
 
 	// r.Route(rootPath + "/board", func(r chi.Router) {
@@ -32,4 +34,8 @@ func main() {
 
 	http.ListenAndServe(":9999", r)
 	// cgi.Serve(r)
+}
+
+func errorMessage(s string) string {
+	return fmt.Sprintf("{\"success\":false, \"message\":\"%s\"}", s)
 }
