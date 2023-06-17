@@ -50,6 +50,9 @@ func main() {
 	// db.Exec("DROP TABLE blockmails")
 	db.AutoMigrate(&schema.BlockMail{})
 
+	// db.Exec("DROP TABLE accesstokens")
+	db.AutoMigrate(&schema.AccessToken{})
+
 	// db.Exec("DROP TABLE passwordresettokens")
 	db.AutoMigrate(&schema.PasswordResetToken{})
 
