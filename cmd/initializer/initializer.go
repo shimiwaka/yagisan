@@ -35,7 +35,7 @@ func main() {
 		return
 	}
 
-	db.Exec("DROP TABLE boxes")
+	// db.Exec("DROP TABLE boxes")
 	db.AutoMigrate(&schema.Box{})
 
 	// db.Exec("DROP TABLE questions")
@@ -49,6 +49,9 @@ func main() {
 	
 	// db.Exec("DROP TABLE blockmails")
 	db.AutoMigrate(&schema.BlockMail{})
+
+	// db.Exec("DROP TABLE passwordresettokens")
+	db.AutoMigrate(&schema.PasswordResetToken{})
 
 	fmt.Println("Successfully initialized.")
 }
