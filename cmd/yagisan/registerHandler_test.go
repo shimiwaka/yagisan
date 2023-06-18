@@ -61,7 +61,7 @@ func doRegisterTest(t *testing.T, db *gorm.DB, tc RegisterTestCase) {
 			assert.Equal(tc.ExpectMessage, r.Message)
 		}
 
-		if tc.ExpectStatus == http.StatusOK {
+		if resp.StatusCode == http.StatusOK {
 			token := schema.AccessToken{}
 			db.First(&token, "token = ?", r.Token)
 			assert.Equal(r.Token, token.Token)

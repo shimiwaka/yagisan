@@ -20,6 +20,8 @@ func main() {
 
 	r.Get(rootPath+"/", pingHandler)
 	r.Post(rootPath+"/register", registerHandler)
+	r.Post(rootPath+"/send", sendQuestionHandler)
+
 	// r.Post(rootPath + "/forget", forgetHandler)
 
 	// r.Route(rootPath + "/board", func(r chi.Router) {
