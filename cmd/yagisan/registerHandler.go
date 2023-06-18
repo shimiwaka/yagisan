@@ -6,6 +6,7 @@ import (
 	"crypto/sha512"
 	"fmt"
 	"net/http"
+	"errors"
 
 	// "time"
 
@@ -19,8 +20,7 @@ import (
 func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	e := r.ParseForm()
 	if e != nil {
-		fmt.Fprintf(w, errorMessage("parse error occured"))
-		return
+		return errors.New("parse error occured")
 	}
 
 	email := r.Form.Get("email")
@@ -38,7 +38,7 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 
 	accessToken := schema.AccessToken{Box: box.ID, Token: token}
 	db.Create(&accessToken)
-	fmt.Fprintf("{\"success\":true, \"token\":\"%s\"}", token)
+	fmt.Fprintf(w, "{\"success\":true, \"token\":\"%s\"}", token)
 
 	return nil
 }
@@ -48,4 +48,8 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	err := register(db, w, r)
+
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
 }

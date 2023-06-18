@@ -20,7 +20,7 @@ type Settings struct {
 
 func main() {
 	settings := Settings{}
-	b, _ := os.ReadFile("config.yaml")
+	b, _ := os.ReadFile("config_test.yaml")
 	yaml.Unmarshal(b, &settings)
 
 	connectQuery := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",

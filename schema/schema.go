@@ -15,7 +15,7 @@ type Box struct {
 type Question struct {
 	gorm.Model `json:"-"`
 	Box        uint   `json:"box"`
-	Mail       string `json:"mail"`
+	Email       string `json:"email"`
 	IP         string `json:"ip"`
 	UserAgent  string `json:"user_agent"`
 	Body       string `json:"body"`
