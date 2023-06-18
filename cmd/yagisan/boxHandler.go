@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/sha512"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -65,6 +67,56 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	err := register(db, w, r)
+
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+}
+
+func showBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("parse error occured")
+	}
+
+	accessToken := r.Form.Get("accessToken")
+	box := validateAccessToken(db, accessToken)
+
+	if box.ID == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("invalid access token")
+	}
+
+	questions := []schema.Question{}
+	err = db.Order("id desc").Find(&questions).Error
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("error in finding questions")
+	}
+
+	resp := schema.ShowBoxResponse{
+		Success:   true,
+		Questions: questions,
+	}
+
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	if err := enc.Encode(&resp); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("failed to encode json")
+	}
+
+	fmt.Fprint(w, buf.String())
+	return nil
+}
+
+func showBoxHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	err := showBox(db, w, r)
 
 	if err != nil {
 		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)

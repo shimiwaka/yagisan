@@ -45,7 +45,7 @@ type BlockMail struct {
 type AccessToken struct {
 	gorm.Model `json:"-"`
 	Box        uint   `json:"box"`
-	Token      string `json:"token"`
+	Token      string `json:"token" gorm:"unique"`
 }
 
 type PasswordResetToken struct {
