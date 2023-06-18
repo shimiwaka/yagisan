@@ -58,6 +58,7 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	db := connector.ConnectDB()
 	defer db.Close()
+	initializeDB(db)
 
 	err := register(db, w, r)
 
