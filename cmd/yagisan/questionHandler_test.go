@@ -123,8 +123,6 @@ func doConfirmQuestionTest(t *testing.T, db *gorm.DB, tc ConfirmQuestionTestCase
 	values := url.Values{}
 	values.Set("qToken", tc.Token)
 
-	fmt.Println(tc.Token)
-
 	r := httptest.NewRequest(http.MethodPost, "http://example.com/confirm/", strings.NewReader(values.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
