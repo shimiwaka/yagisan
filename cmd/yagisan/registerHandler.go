@@ -41,7 +41,12 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	box := schema.Box{Username: username, Email: email, Password: password, Description: description}
-	db.Create(&box)
+	err = db.Create(&box).Error
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return err
+	}
 
 	bytes := make([]byte, 64)
 	rand.Read(bytes)

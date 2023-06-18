@@ -89,6 +89,22 @@ func TestRegister(t *testing.T) {
 			ExpectStatus: http.StatusOK,
 		},
 		{
+			Email:        "hoge2@hoge.com",
+			UserName:      "fuga",
+			Password:      "hogefuga",
+			Description:   "my question box",
+			ExpectStatus:  http.StatusBadRequest,
+			ExpectMessage: "Error 1062: Duplicate entry 'fuga' for key 'username'",
+		},
+		{
+			Email:        "hoge@hoge.com",
+			UserName:      "fuga2",
+			Password:      "hogefuga",
+			Description:   "my question box",
+			ExpectStatus:  http.StatusBadRequest,
+			ExpectMessage: "Error 1062: Duplicate entry 'hoge@hoge.com' for key 'email'",
+		},
+		{
 			Email:         "",
 			UserName:      "fuga",
 			Password:      "hogefuga",
