@@ -20,7 +20,7 @@ type Question struct {
 	UserAgent  string `json:"user_agent"`
 	Body       string `json:"body"`
 	Token      string `json:"token"`
-	Visible	   bool `json:"visible"`
+	Visible    bool   `json:"visible"`
 }
 
 type Answer struct {

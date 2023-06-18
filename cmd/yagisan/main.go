@@ -21,6 +21,7 @@ func main() {
 	r.Get(rootPath+"/", pingHandler)
 	r.Post(rootPath+"/register", registerHandler)
 	r.Post(rootPath+"/send", sendQuestionHandler)
+	r.Get(rootPath+"/confirm/{qToken}", confirmQuestionHandler)
 
 	// r.Post(rootPath + "/forget", forgetHandler)
 

@@ -10,6 +10,7 @@ import (
 
 	// "time"
 
+	"github.com/go-chi/chi"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shimiwaka/yagisan/connector"
@@ -46,17 +47,17 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	token := fmt.Sprintf("%x", md5.Sum(bytes))
 
 	question := schema.Question{
-		Box: box.ID,
-		Email: email,
-		IP: "",
+		Box:       box.ID,
+		Email:     email,
+		IP:        "",
 		UserAgent: "",
-		Body: context,
-		Token: token,
-		Visible: false,
+		Body:      context,
+		Token:     token,
+		Visible:   false,
 	}
 	db.Create(&question)
 	fmt.Fprintf(w, "{\"success\":true, \"token\":\"%s\"}", token)
-	
+
 	return nil
 }
 
@@ -66,6 +67,41 @@ func sendQuestionHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := sendQuestion(db, w, r)
 
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+}
+
+func confirmQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
+	qToken := chi.URLParam(r, "qToken")
+	if qToken == "" {
+		// for test
+		err := r.ParseForm()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("parse error occured")
+		}
+
+		qToken = r.Form.Get("qToken")
+	}
+
+	question := schema.Question{}
+	err := db.First(&question, "token = ?", qToken).Error
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return err
+	}
+	db.Model(&question).Update("visible", true)
+	fmt.Fprintf(w, "{\"success\":true}")
+
+	return nil
+}
+
+func confirmQuestionHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	err := confirmQuestion(db, w, r)
 	if err != nil {
 		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
 	}
