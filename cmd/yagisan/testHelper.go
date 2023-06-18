@@ -18,12 +18,12 @@ func initializeDB(db *gorm.DB) {
 	db.Exec("DROP TABLE blocks")
 	db.AutoMigrate(&schema.Block{})
 
-	db.Exec("DROP TABLE blockmails")
+	// db.Exec("DROP TABLE blockmails")
 	db.AutoMigrate(&schema.BlockMail{})
 
-	db.Exec("DROP TABLE accesstokens")
+	// db.Exec("DROP TABLE accesstokens")
 	db.AutoMigrate(&schema.AccessToken{})
 
-	db.Exec("DROP TABLE passwordresettokens")
+	// db.Exec("DROP TABLE passwordresettokens")
 	db.AutoMigrate(&schema.PasswordResetToken{})
 }

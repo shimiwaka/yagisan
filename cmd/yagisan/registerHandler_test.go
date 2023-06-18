@@ -78,6 +78,8 @@ func TestRegister(t *testing.T) {
 	db := connector.ConnectTestDB()
 	defer db.Close()
 
+	initializeDB(db)
+
 	tcs := []RegisterTestCase{
 		{
 			Email:        "hoge@hoge.com",
