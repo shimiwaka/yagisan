@@ -9,7 +9,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	// "bytes"
 	"encoding/json"
 	"io"
 	"strings"
@@ -89,7 +88,7 @@ func TestRegister(t *testing.T) {
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			Email:        "hoge2@hoge.com",
+			Email:         "hoge2@hoge.com",
 			UserName:      "fuga",
 			Password:      "hogefuga",
 			Description:   "my question box",
@@ -97,7 +96,7 @@ func TestRegister(t *testing.T) {
 			ExpectMessage: "Error 1062: Duplicate entry 'fuga' for key 'username'",
 		},
 		{
-			Email:        "hoge@hoge.com",
+			Email:         "hoge@hoge.com",
 			UserName:      "fuga2",
 			Password:      "hogefuga",
 			Description:   "my question box",

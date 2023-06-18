@@ -5,7 +5,7 @@ import (
 )
 
 type Box struct {
-	gorm.Model  `json:"-"` 
+	gorm.Model  `json:"-"`
 	Username    string `json:"username" gorm:"unique"`
 	Password    string `json:"password"`
 	Email       string `jsoin:"email" gorm:"unique"`

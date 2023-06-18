@@ -5,7 +5,7 @@ import (
 	"github.com/shimiwaka/yagisan/schema"
 )
 
-func initializeDB(db *gorm.DB) {	
+func initializeDB(db *gorm.DB) {
 	db.Exec("DROP TABLE boxes")
 	db.AutoMigrate(&schema.Box{})
 
