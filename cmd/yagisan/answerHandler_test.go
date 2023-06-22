@@ -78,7 +78,7 @@ func TestSendAnswer(t *testing.T) {
 
 	accessToken1 := schema.AccessToken{
 		Box:   box1.ID,
-		Token: "DUMMYXXXX",
+		Token: "DUMMY",
 	}
 	db.Create(&accessToken1)
 
@@ -90,12 +90,49 @@ func TestSendAnswer(t *testing.T) {
 	}
 	db.Create(&question1)
 
+	box2 := schema.Box{
+		Username:    "hoge",
+		Password:    "xxxxxxxxxxx",
+		Email:       "hoge@hoge.com",
+		Description: "",
+	}
+	db.Create(&box2)
+
+	question2 := schema.Question{
+		Box:     box2.ID,
+		Body:    "I love U.",
+		Token:   "XXXX",
+		Visible: false,
+	}
+	db.Create(&question2)
+
 	tcs := []SendAnswerTestCase{
 		{
 			Question:     question1.ID,
-			AccessToken:  "DUMMYXXXX",
+			AccessToken:  "DUMMY",
 			Body:         "I love U too!",
 			ExpectStatus: http.StatusOK,
+		},
+		{
+			Question:     question1.ID,
+			AccessToken:  "non exist",
+			Body:         "I love U too!",
+			ExpectStatus: http.StatusBadRequest,
+			ExpectMessage: "invalid access token",
+		},
+		{
+			Question:     9999,
+			AccessToken:  "DUMMY",
+			Body:         "I love U too!",
+			ExpectStatus: http.StatusBadRequest,
+			ExpectMessage: "invalid question id",
+		},
+		{
+			Question:     question2.ID,
+			AccessToken:  "DUMMY",
+			Body:         "I love U too!",
+			ExpectStatus: http.StatusBadRequest,
+			ExpectMessage: "invalid access token",
 		},
 	}
 
