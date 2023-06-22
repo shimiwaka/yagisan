@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	"fmt"
 
 	"github.com/jinzhu/gorm"
 	"github.com/shimiwaka/yagisan/schema"

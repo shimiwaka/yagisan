@@ -41,7 +41,7 @@ func doSendQuestionTest(t *testing.T, db *gorm.DB, tc SendQuestionTestCase) {
 	values.Add("context", tc.Context)
 	values.Add("boxname", tc.BoxName)
 
-	r := httptest.NewRequest(http.MethodPost, "http://example.com/send", strings.NewReader(values.Encode()))
+	r := httptest.NewRequest(http.MethodPost, "http://example.com/question", strings.NewReader(values.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	w := httptest.NewRecorder()
@@ -58,7 +58,7 @@ func doSendQuestionTest(t *testing.T, db *gorm.DB, tc SendQuestionTestCase) {
 	assert.Equal(tc.ExpectStatus, resp.StatusCode)
 
 	if body != "" {
-		r := schema.RegisterResponse{}
+		r := schema.SendQuestionResponse{}
 		_ = json.Unmarshal(raw, &r)
 
 		if tc.ExpectMessage != "" {
