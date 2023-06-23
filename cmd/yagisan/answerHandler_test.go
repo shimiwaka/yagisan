@@ -23,7 +23,7 @@ import (
 type SendAnswerTestCase struct {
 	Question      uint
 	Body          string
-	AccessToken	  string
+	AccessToken   string
 	ExpectStatus  int
 	ExpectMessage string
 }
@@ -51,7 +51,7 @@ func doSendAnswerTest(t *testing.T, db *gorm.DB, tc SendAnswerTestCase) {
 	body := string(raw)
 
 	assert.Equal(tc.ExpectStatus, resp.StatusCode)
-	
+
 	if body != "" {
 		r := schema.SendAnswerResponse{}
 		_ = json.Unmarshal(raw, &r)
@@ -114,24 +114,24 @@ func TestSendAnswer(t *testing.T) {
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			Question:     question1.ID,
-			AccessToken:  "non exist",
-			Body:         "I love U too!",
-			ExpectStatus: http.StatusBadRequest,
+			Question:      question1.ID,
+			AccessToken:   "non exist",
+			Body:          "I love U too!",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "invalid access token",
 		},
 		{
-			Question:     9999,
-			AccessToken:  "DUMMY",
-			Body:         "I love U too!",
-			ExpectStatus: http.StatusBadRequest,
+			Question:      9999,
+			AccessToken:   "DUMMY",
+			Body:          "I love U too!",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "invalid question id",
 		},
 		{
-			Question:     question2.ID,
-			AccessToken:  "DUMMY",
-			Body:         "I love U too!",
-			ExpectStatus: http.StatusBadRequest,
+			Question:      question2.ID,
+			AccessToken:   "DUMMY",
+			Body:          "I love U too!",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "invalid access token",
 		},
 	}

@@ -20,8 +20,8 @@ import (
 )
 
 type LoginTestCase struct {
-	Username         string
-	Password	string
+	Username      string
+	Password      string
 	ExpectStatus  int
 	ExpectMessage string
 }
@@ -82,26 +82,26 @@ func TestLogin(t *testing.T) {
 
 	tcs := []LoginTestCase{
 		{
-			Username:        "username",
-			Password:		"password",
+			Username:     "username",
+			Password:     "password",
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			Username:        "",
-			Password:		"password",
-			ExpectStatus: http.StatusBadRequest,
+			Username:      "",
+			Password:      "password",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "lack of parameters",
 		},
 		{
-			Username:        "username",
-			Password:		"",
-			ExpectStatus: http.StatusBadRequest,
+			Username:      "username",
+			Password:      "",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "lack of parameters",
 		},
 		{
-			Username:        "username",
-			Password:		"pissword",
-			ExpectStatus: http.StatusBadRequest,
+			Username:      "username",
+			Password:      "pissword",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "record not found",
 		},
 	}
