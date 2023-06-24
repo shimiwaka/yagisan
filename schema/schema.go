@@ -19,7 +19,7 @@ type Question struct {
 	IP         string `json:"-"`
 	UserAgent  string `json:"-"`
 	Body       string `json:"body"`
-	Token      string `json:"-"`
+	Token      string `json:"token"`
 	Visible    bool   `json:"-"`
 }
 
