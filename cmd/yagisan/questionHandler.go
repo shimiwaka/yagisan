@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"net/smtp"
+	"os"
 	"strings"
 
 	// "time"
@@ -76,7 +76,7 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		auth := smtp.CRAMMD5Auth(settings.MailAddress, settings.MailPassword)
 		msg := []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
 
-		err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg);
+		err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg)
 		if err != nil {
 			return err
 		}

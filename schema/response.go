@@ -8,6 +8,7 @@ type RegisterResponse struct {
 
 type ShowBoxResponse struct {
 	Success   bool       `json:"success"`
+	Username  string     `json:"username"`
 	Questions []Question `json:"questions"`
 }
 

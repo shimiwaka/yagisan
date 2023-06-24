@@ -71,7 +71,7 @@ func doSendQuestionTest(t *testing.T, db *gorm.DB, tc SendQuestionTestCase) {
 
 			question := schema.Question{}
 			db.First(&question, "box = ?", box.ID)
-			
+
 			assert.Equal(tc.Context, question.Body)
 			assert.Equal(false, question.Visible)
 		}

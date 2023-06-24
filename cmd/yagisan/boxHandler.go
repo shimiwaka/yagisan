@@ -89,7 +89,7 @@ func showBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	questions := []schema.Question{}
-	err = db.Order("id desc").Find(&questions).Error
+	err = db.Order("id desc").Find(&questions, "box = ? and visible = true", box.ID).Error
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -97,6 +97,7 @@ func showBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resp := schema.ShowBoxResponse{
+		Username:  box.Username,
 		Success:   true,
 		Questions: questions,
 	}
