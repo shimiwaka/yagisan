@@ -24,7 +24,7 @@ func main() {
 	r.Post(rootPath+"/question", sendQuestionHandler)
 	r.Post(rootPath+"/answer", sendAnswerHandler)
 	r.Get(rootPath+"/confirm/{qToken}", confirmQuestionHandler)
-	r.Get(rootPath+"/box/show", showBoxHandler)
+	r.Post(rootPath+"/box/show", showBoxHandler)
 
 	http.ListenAndServe(":9999", r)
 	// cgi.Serve(r)
