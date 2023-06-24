@@ -31,6 +31,7 @@ type LoginResponse struct {
 
 type GetQuestionReponse struct {
 	Success bool `json:"success"`
+	Message string `jsoin:"message"`
 	Email      string `json:"email"`
 	IP         string `json:"ip"`
 	UserAgent  string `json:"useragent"`

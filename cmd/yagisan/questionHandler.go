@@ -176,6 +176,7 @@ func getQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resp := schema.GetQuestionReponse{
+		Success: true,
 		Email: question.Email,
 		IP: question.IP,
 		UserAgent: question.UserAgent,

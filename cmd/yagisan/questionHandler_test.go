@@ -220,7 +220,7 @@ func doGetQuestionTest(t *testing.T, db *gorm.DB, tc GetQuestionTestCase) {
 	assert.Equal(tc.ExpectStatus, resp.StatusCode)
 
 	if body != "" {
-		r := schema.RegisterResponse{}
+		r := schema.GetQuestionReponse{}
 		_ = json.Unmarshal(raw, &r)
 
 		if tc.ExpectMessage != "" {
