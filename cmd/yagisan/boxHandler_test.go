@@ -30,6 +30,7 @@ type RegisterTestCase struct {
 
 type ShowBoxTestCase struct {
 	AccessToken  string
+	Page int
 	ExpectStatus int
 	ExpectBody   string
 }
@@ -169,6 +170,7 @@ func doShowBoxTest(t *testing.T, db *gorm.DB, tc ShowBoxTestCase) {
 
 	values := url.Values{}
 	values.Set("accessToken", tc.AccessToken)
+	values.Set("page", fmt.Sprintf("%d", tc.Page))
 
 	r := httptest.NewRequest(http.MethodPost, "http://example.com/box/show", strings.NewReader(values.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -253,6 +255,12 @@ func TestShowBox(t *testing.T) {
 			AccessToken:  "DUMMY2",
 			ExpectStatus: http.StatusOK,
 			ExpectBody:   "{\"success\":true,\"username\":\"fuga\",\"questions\":[]}\n",
+		},
+		{
+			AccessToken:  "DUMMY",
+			ExpectStatus: http.StatusOK,
+			Page: 1,
+			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[]}\n",
 		},
 	}
 
