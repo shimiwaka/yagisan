@@ -41,6 +41,11 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("password must be at least 8 characters")
 	}
+	
+	if len(username) < 3 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("username must be at least 3 characters")
+	}
 
 	box := schema.Box{Username: username, Email: email, Password: password, Description: description}
 	err = db.Create(&box).Error
