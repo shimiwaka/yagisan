@@ -28,3 +28,12 @@ type LoginResponse struct {
 	Message string `json:"message"`
 	Token   string `json:"token"`
 }
+
+type GetQuestionReponse struct {
+	Success bool `json:"success"`
+	Email      string `json:"email"`
+	IP         string `json:"ip"`
+	UserAgent  string `json:"useragent"`
+	Body       string `json:"body"`
+	Token      string `json:"token"`
+}

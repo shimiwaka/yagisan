@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/sha512"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -128,6 +130,74 @@ func confirmQuestionHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	err := confirmQuestion(db, w, r)
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+}
+
+func getQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
+	qToken := chi.URLParam(r, "qToken")
+	if qToken == "" {
+		// for test
+		err := r.ParseForm()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("parse error occured")
+		}
+
+		qToken = r.Form.Get("qToken")
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("parse error occured")
+	}
+
+	accessToken := r.Form.Get("accessToken")
+
+	box := validateAccessToken(db, accessToken)
+
+	if box.ID == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("invalid access token")
+	}
+
+	question := schema.Question{}
+	err = db.First(&question, "token = ? and visible = true", qToken).Error
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return err
+	}
+
+	if question.Box != box.ID {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("invalid access token")
+	}
+
+	resp := schema.GetQuestionReponse{
+		Email: question.Email,
+		IP: question.IP,
+		UserAgent: question.UserAgent,
+		Body: question.Body,
+	}
+	
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	if err := enc.Encode(&resp); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("failed to encode json")
+	}
+
+	fmt.Fprint(w, buf.String())
+	return nil
+}
+
+func getQuestionHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	err := getQuestion(db, w, r)
 	if err != nil {
 		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
 	}
