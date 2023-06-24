@@ -37,4 +37,6 @@ type GetQuestionReponse struct {
 	UserAgent  string `json:"useragent"`
 	Body       string `json:"body"`
 	Token      string `json:"token"`
+	AnswerBody	string `json:"answer_body"`
+	QuestionID uint `json:"question_id"`
 }

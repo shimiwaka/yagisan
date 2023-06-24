@@ -175,12 +175,17 @@ func getQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		return errors.New("invalid access token")
 	}
 
+	answer := schema.Answer{}
+	db.Order("id desc").First(&answer, "question = ?", question.ID)
+
 	resp := schema.GetQuestionReponse{
 		Success: true,
 		Email: question.Email,
 		IP: question.IP,
 		UserAgent: question.UserAgent,
 		Body: question.Body,
+		QuestionID: question.ID,
+		AnswerBody: answer.Body,
 	}
 	
 	var buf bytes.Buffer
