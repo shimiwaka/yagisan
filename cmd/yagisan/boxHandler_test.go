@@ -141,6 +141,14 @@ func TestRegister(t *testing.T) {
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "password must be at least 8 characters",
 		},
+		{
+			Email:         "hoge@hoge.com",
+			UserName:      "fu",
+			Password:      "hogefuga",
+			Description:   "my question box",
+			ExpectStatus:  http.StatusBadRequest,
+			ExpectMessage: "username must be at least 3 characters",
+		},
 	}
 
 	for _, tc := range tcs {
