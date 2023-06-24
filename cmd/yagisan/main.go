@@ -19,6 +19,7 @@ func main() {
 		AllowedOrigins: []string{"*"}}))
 
 	r.Get(rootPath+"/", pingHandler)
+	r.Post(rootPath+"/login", loginHandler)
 	r.Post(rootPath+"/register", registerHandler)
 	r.Post(rootPath+"/question", sendQuestionHandler)
 	r.Post(rootPath+"/answer", sendAnswerHandler)
