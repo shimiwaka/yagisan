@@ -14,13 +14,13 @@ type Box struct {
 
 type Question struct {
 	gorm.Model `json:"-"`
-	Box        uint   `json:"box"`
-	Email      string `json:"email"`
-	IP         string `json:"ip"`
-	UserAgent  string `json:"user_agent"`
+	Box        uint   `json:"-"`
+	Email      string `json:"-"`
+	IP         string `json:"-"`
+	UserAgent  string `json:"-"`
 	Body       string `json:"body"`
-	Token      string `json:"token"`
-	Visible    bool   `json:"visible"`
+	Token      string `json:"-"`
+	Visible    bool   `json:"-"`
 }
 
 type Answer struct {
