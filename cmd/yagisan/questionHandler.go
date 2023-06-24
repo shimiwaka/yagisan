@@ -186,6 +186,7 @@ func getQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		Body: question.Body,
 		QuestionID: question.ID,
 		AnswerBody: answer.Body,
+		CreatedAt: question.CreatedAt,
 	}
 	
 	var buf bytes.Buffer

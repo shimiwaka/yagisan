@@ -1,5 +1,9 @@
 package schema
 
+import (
+	"time"
+)
+
 type RegisterResponse struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
@@ -38,5 +42,6 @@ type GetQuestionReponse struct {
 	Body       string `json:"body"`
 	Token      string `json:"token"`
 	AnswerBody	string `json:"answer_body"`
+	CreatedAt	time.Time `json:"created_at"`
 	QuestionID uint `json:"question_id"`
 }

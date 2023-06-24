@@ -13,7 +13,7 @@ type Box struct {
 }
 
 type Question struct {
-	gorm.Model `json:"-"`
+	gorm.Model
 	Box        uint   `json:"-"`
 	Email      string `json:"-"`
 	IP         string `json:"-"`
