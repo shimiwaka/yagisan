@@ -1,9 +1,0 @@
-db_username: testuser
-db_pass: testpass
-db_host: localhost
-db_port: 3308
-db_name: testdb
-mail_host: hoge.mail.co.jp
-mail_address: yagisan@hoge.mail.co.jp
-mail_password: xxxxx
-service_host: https://192.168.0.4:3000
