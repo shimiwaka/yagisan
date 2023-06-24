@@ -218,6 +218,7 @@ func TestShowBox(t *testing.T) {
 		question := schema.Question{
 			Box:  box1.ID,
 			Body: fmt.Sprintf("I Love U(%d).", i),
+			Visible: true,
 		}
 		db.Create(&question)
 	}
@@ -226,7 +227,7 @@ func TestShowBox(t *testing.T) {
 		{
 			AccessToken:  "DUMMY",
 			ExpectStatus: http.StatusOK,
-			ExpectBody:   "{\"success\":true,\"questions\":[{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(2).\",\"token\":\"\",\"visible\":false},{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(1).\",\"token\":\"\",\"visible\":false},{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(0).\",\"token\":\"\",\"visible\":false}]}\n",
+			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[{\"body\":\"I Love U(2).\",\"token\":\"\"},{\"body\":\"I Love U(1).\",\"token\":\"\"},{\"body\":\"I Love U(0).\",\"token\":\"\"}]}\n",
 		},
 		{
 			AccessToken:  "non exist",
@@ -235,7 +236,7 @@ func TestShowBox(t *testing.T) {
 		{
 			AccessToken:  "DUMMY2",
 			ExpectStatus: http.StatusOK,
-			ExpectBody:   "{\"success\":true,\"questions\":[{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(2).\",\"token\":\"\",\"visible\":false},{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(1).\",\"token\":\"\",\"visible\":false},{\"box\":1,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(0).\",\"token\":\"\",\"visible\":false}]}\n",
+			ExpectBody:   "{\"success\":true,\"username\":\"fuga\",\"questions\":[]}\n",
 		},
 	}
 
