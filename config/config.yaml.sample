@@ -6,4 +6,4 @@ db_name: testdb
 mail_host: hoge.mail.co.jp
 mail_address: yagisan@hoge.mail.co.jp
 mail_password: xxxxx
-service_host: https://192.168.0.4:3000
+service_host: http://192.168.0.4:3000
