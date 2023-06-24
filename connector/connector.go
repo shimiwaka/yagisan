@@ -9,18 +9,11 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/shimiwaka/yagisan/schema"
 )
 
-type Settings struct {
-	Username string `yaml:"db_username"`
-	Pass     string `yaml:"db_pass"`
-	Host     string `yaml:"db_host"`
-	Port     int    `yaml:"db_port"`
-	Name     string `yaml:"db_name"`
-}
-
 func ConnectDB() *gorm.DB {
-	settings := Settings{}
+	settings := schema.Settings{}
 	b, _ := os.ReadFile("config.yaml")
 	yaml.Unmarshal(b, &settings)
 
@@ -40,7 +33,7 @@ func ConnectDB() *gorm.DB {
 }
 
 func ConnectTestDB() *gorm.DB {
-	settings := Settings{}
+	settings := schema.Settings{}
 	b, _ := os.ReadFile("config_test.yaml")
 	yaml.Unmarshal(b, &settings)
 
