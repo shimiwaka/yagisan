@@ -7,6 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"net/smtp"
+	"strings"
 
 	// "time"
 
@@ -15,6 +18,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shimiwaka/yagisan/connector"
 	"github.com/shimiwaka/yagisan/schema"
+	"gopkg.in/yaml.v2"
 )
 
 func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
@@ -56,7 +60,29 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		Visible:   false,
 	}
 	db.Create(&question)
-	fmt.Fprintf(w, "{\"success\":true, \"token\":\"%s\"}", token)
+
+	testMode := os.Getenv("TEST_MODE")
+
+	if testMode != "1" {
+		settings := schema.Settings{}
+		b, _ := os.ReadFile("config.yaml")
+		yaml.Unmarshal(b, &settings)
+
+		from := settings.MailAddress
+		recipients := []string{rawEmail}
+		subject := "ゆうびんやぎさん"
+		body := fmt.Sprintf("以下のリンクにアクセスすると質問が送信されます：\n\n%s/confirm/%s", settings.ServiceHost, token)
+
+		auth := smtp.CRAMMD5Auth(settings.MailAddress, settings.MailPassword)
+		msg := []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
+
+		err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg);
+		if err != nil {
+			return err
+		}
+	}
+
+	fmt.Fprintf(w, "{\"success\":true}")
 
 	return nil
 }

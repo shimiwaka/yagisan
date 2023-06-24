@@ -66,9 +66,12 @@ func doSendQuestionTest(t *testing.T, db *gorm.DB, tc SendQuestionTestCase) {
 		}
 
 		if resp.StatusCode == http.StatusOK {
+			box := schema.Box{}
+			db.First(&box, "username = ?", tc.BoxName)
+
 			question := schema.Question{}
-			db.First(&question, "token = ?", r.Token)
-			assert.Equal(r.Token, question.Token)
+			db.First(&question, "box = ?", box.ID)
+			
 			assert.Equal(tc.Context, question.Body)
 			assert.Equal(false, question.Visible)
 		}
