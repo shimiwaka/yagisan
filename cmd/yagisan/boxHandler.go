@@ -38,11 +38,6 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		return errors.New("lack of parameters")
 	}
 
-	if !regexp.MustCompile("^[0-9a-zA-Z_]+$").MatchString(rawPassword) {
-		w.WriteHeader(http.StatusBadRequest)
-		return errors.New("password must be only alphabet, number and _.")
-	}
-	
 	if !regexp.MustCompile("^[0-9a-zA-Z_]+$").MatchString(username) {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("username must be only alphabet, number and _.")

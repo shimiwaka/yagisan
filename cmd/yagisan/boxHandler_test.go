@@ -157,14 +157,6 @@ func TestRegister(t *testing.T) {
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "username must be only alphabet, number and _.",
 		},
-		{
-			Email:         "hoge2@hoge.com",
-			UserName:      "fuga2",
-			Password:      "ほげふがほげふが",
-			Description:   "my question box",
-			ExpectStatus:  http.StatusBadRequest,
-			ExpectMessage: "password must be only alphabet, number and _.",
-		},
 	}
 
 	for _, tc := range tcs {
