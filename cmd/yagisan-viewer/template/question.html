@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:url" content="https://nemucure.sakura.ne.jp/tmp/hoge.html">
+    <meta property="og:title" content="やぎさんゆうびん">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://64.media.tumblr.com/11e97f987ddd29a9bf564f92b4db04fc/e5f511aa88dfd8ec-59/s1280x1920/403b7d225a5e96d5821456644da4a3d167781eab.png">
+    <meta property="og:description" content="{{.Body}}">
+    <link rel="manifest" href="/static/manifest.json" />
+    <title>やぎさんゆうびん</title>
+  </head>
+  <body>
+    <div className="App">
+      <div className="Header">
+        <Link to="/">やぎさんゆうびん</Link>
+      </div>
+      <div className="Menu">
+        <div className="Box">
+          <div>
+            {{.Body}}
+          </div>
+          <div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div className="Small">
+        このサービスはβ版です / 作者 : 末路ちゃん(<a href="https://twitter.com/nemucure">@nemucure</a>) 
+      </div>
+    </div>
+  </body>
+</html>

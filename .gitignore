@@ -1,4 +1,5 @@
 /cmd/yagisan/yagisan
+/cmd/yagisan-viewer/yagisan-viewer
 /cmd/initializer/initializer
 /config/config.yaml
 /config/config_test.yaml
