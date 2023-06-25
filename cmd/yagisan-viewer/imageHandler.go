@@ -20,6 +20,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		// for test
 		err := r.ParseForm()
 		if err != nil {
+			w.Header().Set("Content-Type","text/plain")
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "parse error occured: %v", err)
 			return
@@ -34,6 +35,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 	question := schema.Question{}
 	err := db.First(&question, "token = ? and visible = true", qToken).Error
 	if err != nil {
+		w.Header().Set("Content-Type","text/plain")
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "token is invalid : %v", err)
 		return
@@ -51,6 +53,8 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = generator.Generate(question.Body)
 	if err != nil {
+		w.Header().Set("Content-Type","text/plain")
+		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "image convert error : %v", err)
 		return
 	}
