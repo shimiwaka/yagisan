@@ -14,6 +14,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Get(rootPath+"/question/{qToken}", questionHandler)
+	r.Get(rootPath+"/image/{qToken}", imageHandler)
 
 	http.ListenAndServe(":9998", r)
 	// cgi.Serve(r)
