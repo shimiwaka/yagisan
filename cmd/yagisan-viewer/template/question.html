@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000" />
     <meta property="og:title" content="やぎさんゆうびん">
     <meta property="og:type" content="article">
-    <meta property="og:image" content="https://64.media.tumblr.com/11e97f987ddd29a9bf564f92b4db04fc/e5f511aa88dfd8ec-59/s1280x1920/403b7d225a5e96d5821456644da4a3d167781eab.png">
+    <meta property="og:image" content="{{.OgpImage}}">
     <meta property="og:description" content="{{.Body}}">
     <link rel="manifest" href="/static/manifest.json" />
     <link rel="stylesheet" href="/static/App.css">
@@ -16,7 +16,7 @@
   <body>
     <div class="App">
       <div class="Header">
-        <a href="/">やぎさんゆうびん</Link>
+        <a href="{{.MainUrl}}">やぎさんゆうびん</a>
       </div>
       <div class="Menu">
         <div class="Box">          

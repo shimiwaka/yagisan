@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+	"os"
+	"gopkg.in/yaml.v2"
 
 	// "net/http/cgi"
 
@@ -14,7 +16,11 @@ import (
 	"github.com/shimiwaka/yagisan/schema"
 )
 
-func questionHandler(w http.ResponseWriter, r *http.Request) {
+func questionHandler(w http.ResponseWriter, r *http.Request) {	
+	settings := schema.Settings{}
+	b, _ := os.ReadFile("config.yaml")
+	yaml.Unmarshal(b, &settings)
+
 	qToken := chi.URLParam(r, "qToken")
 	if qToken == "" {
 		// for test
@@ -56,10 +62,14 @@ func questionHandler(w http.ResponseWriter, r *http.Request) {
 		Token      string
 		AnswerBody []string
 		Body       []string
+		MainUrl	   string
+		OgpImage   string
 	}{
 		Token:      qToken,
 		AnswerBody: answerBodys,
 		Body:       bodys,
+		MainUrl:	settings.MainUrl + "/mypage",
+		OgpImage:	settings.SubUrl + "/image/" + qToken,
 	}); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "failed to execute template: %v", err)
