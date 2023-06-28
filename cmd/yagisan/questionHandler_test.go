@@ -34,7 +34,7 @@ type ConfirmQuestionTestCase struct {
 }
 
 type GetQuestionTestCase struct {
-	AccessToken	  string
+	AccessToken   string
 	Token         string
 	ExpectStatus  int
 	ExpectMessage string
@@ -203,7 +203,7 @@ func doGetQuestionTest(t *testing.T, db *gorm.DB, tc GetQuestionTestCase) {
 	values.Set("qToken", tc.Token)
 	values.Set("accessToken", tc.AccessToken)
 
-	r := httptest.NewRequest(http.MethodPost, "http://example.com/question/" + tc.Token, strings.NewReader(values.Encode()))
+	r := httptest.NewRequest(http.MethodPost, "http://example.com/question/"+tc.Token, strings.NewReader(values.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	w := httptest.NewRecorder()
@@ -236,7 +236,7 @@ func TestGetQuestion(t *testing.T) {
 	initializeDB(db)
 
 	box1 := schema.Box{
-		Username:	"hoge",
+		Username: "hoge",
 	}
 	db.Create(&box1)
 
@@ -257,19 +257,19 @@ func TestGetQuestion(t *testing.T) {
 	db.Create(&invisibleQuestion)
 
 	accessToken1 := schema.AccessToken{
-		Box:     box1.ID,
-		Token:   "YYYY",
+		Box:   box1.ID,
+		Token: "YYYY",
 	}
 	db.Create(&accessToken1)
-	
+
 	box2 := schema.Box{
-		Username:	"fuga",
+		Username: "fuga",
 	}
 	db.Create(&box2)
 
 	accessToken2 := schema.AccessToken{
-		Box:     box2.ID,
-		Token:   "AAAA",
+		Box:   box2.ID,
+		Token: "AAAA",
 	}
 	db.Create(&accessToken2)
 
@@ -280,19 +280,19 @@ func TestGetQuestion(t *testing.T) {
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			AccessToken:  "YYYY",
+			AccessToken:   "YYYY",
 			Token:         "ZZZZ",
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "record not found",
 		},
 		{
-			AccessToken:  "YYYY",
+			AccessToken:   "YYYY",
 			Token:         "unexist",
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "record not found",
 		},
 		{
-			AccessToken:  "AAAA",
+			AccessToken:   "AAAA",
 			Token:         "ZZZZ",
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "invalid access token",
@@ -303,4 +303,3 @@ func TestGetQuestion(t *testing.T) {
 		doGetQuestionTest(t, db, tc)
 	}
 }
-

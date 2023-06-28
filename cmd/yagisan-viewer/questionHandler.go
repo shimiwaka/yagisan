@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"html/template"
+	"net/http"
+	"strings"
 
 	// "net/http/cgi"
 
@@ -41,17 +42,6 @@ func questionHandler(w http.ResponseWriter, r *http.Request) {
 	answer := schema.Answer{}
 	db.Order("id desc").First(&answer, "question = ?", question.ID)
 
-	// resp := schema.GetQuestionReponse{
-	// 	Success: true,
-	// 	Email: question.Email,
-	// 	IP: question.IP,
-	// 	UserAgent: question.UserAgent,
-	// 	Body: question.Body,
-	// 	QuestionID: question.ID,
-	// 	AnswerBody: answer.Body,
-	// 	CreatedAt: question.CreatedAt,
-	// }
-
 	t, err := template.ParseFiles("template/question.html")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -59,14 +49,17 @@ func questionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	bodys := strings.Split(question.Body, "\n")
+	answerBodys := strings.Split(answer.Body, "\n")
+
 	if err := t.Execute(w, struct {
-		Token   string;
-		AnswerBody string;
-		Body string;
+		Token      string
+		AnswerBody []string
+		Body       []string
 	}{
-		Token:  qToken,
-		Body: question.Body,
-		AnswerBody: answer.Body,
+		Token:      qToken,
+		AnswerBody: answerBodys,
+		Body:       bodys,
 	}); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "failed to execute template: %v", err)

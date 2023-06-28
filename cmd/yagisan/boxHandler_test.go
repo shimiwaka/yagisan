@@ -30,7 +30,7 @@ type RegisterTestCase struct {
 
 type ShowBoxTestCase struct {
 	AccessToken  string
-	Page int
+	Page         int
 	ExpectStatus int
 	ExpectBody   string
 }
@@ -234,8 +234,8 @@ func TestShowBox(t *testing.T) {
 
 	for i := 0; i < 3; i++ {
 		question := schema.Question{
-			Box:  box1.ID,
-			Body: fmt.Sprintf("I Love U(%d).", i),
+			Box:     box1.ID,
+			Body:    fmt.Sprintf("I Love U(%d).", i),
 			Visible: true,
 		}
 		db.Create(&question)
@@ -259,7 +259,7 @@ func TestShowBox(t *testing.T) {
 		{
 			AccessToken:  "DUMMY",
 			ExpectStatus: http.StatusOK,
-			Page: 1,
+			Page:         1,
 			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[]}\n",
 		},
 	}

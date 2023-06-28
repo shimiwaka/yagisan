@@ -10,4 +10,6 @@ type Settings struct {
 	MailAddress  string `yaml:"mail_address"`
 	MailPassword string `yaml:"mail_password"`
 	ServiceHost  string `yaml:"service_host"`
+	MainUrl      string `yaml:"main_url"`
+	SubUrl       string `yaml:"sub_url"`
 }

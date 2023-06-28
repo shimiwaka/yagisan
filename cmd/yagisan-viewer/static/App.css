@@ -1,0 +1,44 @@
+.App {
+  text-align: center;
+}
+
+.Header {
+  font-size: 24px;
+}
+
+a {
+  color: #0000cd;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+div {
+  padding: 5px;
+}
+
+.Small {
+  font-size: 14px;
+}
+
+textarea {
+  width: 300px;
+  height: 120px;
+}
+
+.Message {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.Box {
+  margin: auto;
+  margin-bottom: 25px;
+  width: 350px;
+  padding: 15px;
+  border: solid;
+  border-width: 1px;
+  border-color: #0000cd;
+}

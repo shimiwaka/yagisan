@@ -34,14 +34,14 @@ type LoginResponse struct {
 }
 
 type GetQuestionReponse struct {
-	Success bool `json:"success"`
-	Message string `jsoin:"message"`
-	Email      string `json:"email"`
-	IP         string `json:"ip"`
-	UserAgent  string `json:"useragent"`
-	Body       string `json:"body"`
-	Token      string `json:"token"`
-	AnswerBody	string `json:"answer_body"`
-	CreatedAt	time.Time `json:"created_at"`
-	QuestionID uint `json:"question_id"`
+	Success    bool      `json:"success"`
+	Message    string    `jsoin:"message"`
+	Email      string    `json:"email"`
+	IP         string    `json:"ip"`
+	UserAgent  string    `json:"useragent"`
+	Body       string    `json:"body"`
+	Token      string    `json:"token"`
+	AnswerBody string    `json:"answer_body"`
+	CreatedAt  time.Time `json:"created_at"`
+	QuestionID uint      `json:"question_id"`
 }

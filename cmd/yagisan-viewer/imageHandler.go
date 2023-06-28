@@ -1,17 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"bytes"
 	"encoding/binary"
+	"fmt"
+	"net/http"
+
 	// "net/http/cgi"
 
 	"github.com/go-chi/chi"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/shimiwaka/str2img"
 	"github.com/shimiwaka/yagisan/connector"
 	"github.com/shimiwaka/yagisan/schema"
-	"github.com/shimiwaka/str2img"
 )
 
 func imageHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +21,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		// for test
 		err := r.ParseForm()
 		if err != nil {
-			w.Header().Set("Content-Type","text/plain")
+			w.Header().Set("Content-Type", "text/plain")
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "parse error occured: %v", err)
 			return
@@ -35,13 +36,13 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 	question := schema.Question{}
 	err := db.First(&question, "token = ? and visible = true", qToken).Error
 	if err != nil {
-		w.Header().Set("Content-Type","text/plain")
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "token is invalid : %v", err)
 		return
 	}
 
-	w.Header().Set("Content-Type","image/png")
+	w.Header().Set("Content-Type", "image/png")
 
 	generator := &str2img.Generator{
 		ImageHeight: 630,
@@ -53,7 +54,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = generator.Generate(question.Body)
 	if err != nil {
-		w.Header().Set("Content-Type","text/plain")
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, "image convert error : %v", err)
 		return

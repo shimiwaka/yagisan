@@ -48,7 +48,7 @@ func register(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("password must be at least 8 characters")
 	}
-	
+
 	if len(username) < 3 {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("username must be at least 3 characters")
@@ -102,7 +102,7 @@ func showBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	questions := []schema.Question{}
-	err = db.Limit(10).Offset(page * 10).Order("id desc").Find(&questions, "box = ? and visible = true", box.ID).Error
+	err = db.Limit(10).Offset(page*10).Order("id desc").Find(&questions, "box = ? and visible = true", box.ID).Error
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
