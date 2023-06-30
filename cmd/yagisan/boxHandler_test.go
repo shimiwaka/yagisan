@@ -42,6 +42,7 @@ type UpdateTestCase struct {
 	NewUserName    string
 	NewPassword    string
 	NewDescription string
+	NewSecureMode string
 	AccessToken    string
 	Password       string
 	ExpectStatus   int
@@ -293,6 +294,7 @@ func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase) {
 	values.Set("newEmail", tc.NewEmail)
 	values.Set("newUsername", tc.NewUserName)
 	values.Set("newDescription", tc.NewDescription)
+	values.Set("newSecureMode", tc.NewSecureMode)
 	values.Set("newPassword", tc.NewPassword)
 
 	r := httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
@@ -334,6 +336,14 @@ func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase) {
 				assert.Equal(fmt.Sprintf("%x", sha512.Sum512([]byte(tc.NewPassword))), box.Password)
 			}
 
+			if tc.NewSecureMode == "true" {
+				assert.Equal(true, box.SecureMode)
+			}
+
+			if tc.NewSecureMode == "false" {
+				assert.Equal(false, box.SecureMode)
+			}
+
 			assert.Equal(tc.NewDescription, box.Description)
 		} else {
 			assert.Equal(tc.ExpectMessage, r.Message)
@@ -351,6 +361,7 @@ func TestUpdate(t *testing.T) {
 		Username:    "hoge",
 		Password:    fmt.Sprintf("%x", sha512.Sum512([]byte("xxxxxxxx"))),
 		Email:       "hoge@hoge.com",
+		SecureMode:	true,
 		Description: "",
 	}
 	db.Create(&box1)
@@ -389,6 +400,12 @@ func TestUpdate(t *testing.T) {
 			ExpectStatus:   http.StatusOK,
 		},
 		{
+			AccessToken:    "DUMMY",
+			NewSecureMode: "false",
+			Password:       "xxxxxxxx",
+			ExpectStatus:   http.StatusOK,
+		},
+		{
 			AccessToken:  "DUMMY",
 			NewPassword:  "yyyyyyyy",
 			Password:     "xxxxxxxx",
@@ -400,6 +417,7 @@ func TestUpdate(t *testing.T) {
 			NewUserName:    "piyo",
 			NewDescription: "I Love U too.",
 			NewPassword:    "zzzzzzzz",
+			NewSecureMode:  "true",
 			Password:       "yyyyyyyy",
 			ExpectStatus:   http.StatusOK,
 		},

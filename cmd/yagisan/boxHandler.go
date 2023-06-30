@@ -165,6 +165,7 @@ func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	rawNewPassword := r.Form.Get("newPassword")
 	newPassword := fmt.Sprintf("%x", sha512.Sum512([]byte(rawNewPassword)))
 	newDescription := r.Form.Get("newDescription")
+	newSecureMode := r.Form.Get("newSecureMode")
 
 	if !regexp.MustCompile("^[0-9a-zA-Z_]+$").MatchString(newUsername) && newUsername != "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,6 +208,22 @@ func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 
 	if box.Description != newDescription {
 		err = db.Model(&box).Update("description", newDescription).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	if newSecureMode == "true" {
+		err = db.Model(&box).Update("secure_mode", true).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	if newSecureMode == "false" {
+		err = db.Model(&box).Update("secure_mode", false).Error
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return errors.New("DB error occured")
