@@ -42,7 +42,7 @@ type UpdateTestCase struct {
 	NewUserName    string
 	NewPassword    string
 	NewDescription string
-	NewSecureMode string
+	NewSecureMode  string
 	AccessToken    string
 	Password       string
 	ExpectStatus   int
@@ -361,7 +361,7 @@ func TestUpdate(t *testing.T) {
 		Username:    "hoge",
 		Password:    fmt.Sprintf("%x", sha512.Sum512([]byte("xxxxxxxx"))),
 		Email:       "hoge@hoge.com",
-		SecureMode:	true,
+		SecureMode:  true,
 		Description: "",
 	}
 	db.Create(&box1)
@@ -400,10 +400,10 @@ func TestUpdate(t *testing.T) {
 			ExpectStatus:   http.StatusOK,
 		},
 		{
-			AccessToken:    "DUMMY",
+			AccessToken:   "DUMMY",
 			NewSecureMode: "false",
-			Password:       "xxxxxxxx",
-			ExpectStatus:   http.StatusOK,
+			Password:      "xxxxxxxx",
+			ExpectStatus:  http.StatusOK,
 		},
 		{
 			AccessToken:  "DUMMY",
@@ -461,8 +461,8 @@ func TestProfile(t *testing.T) {
 	}
 	db.Create(&box)
 
-	accessToken := schema.AccessToken {
-		Box: box.ID,
+	accessToken := schema.AccessToken{
+		Box:   box.ID,
 		Token: "DUMMY",
 	}
 	db.Create(&accessToken)
