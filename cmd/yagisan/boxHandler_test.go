@@ -261,7 +261,7 @@ func TestShowBox(t *testing.T) {
 		{
 			AccessToken:  "DUMMY",
 			ExpectStatus: http.StatusOK,
-			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[{\"ID\":3,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(2).\",\"token\":\"\"},{\"ID\":2,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(1).\",\"token\":\"\"},{\"ID\":1,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(0).\",\"token\":\"\"}]}\n",
+			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[{\"ID\":3,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(2).\",\"token\":\"\"},{\"ID\":2,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(1).\",\"token\":\"\"},{\"ID\":1,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"email\":\"\",\"ip\":\"\",\"user_agent\":\"\",\"body\":\"I Love U(0).\",\"token\":\"\"}]}\n",
 		},
 		{
 			AccessToken:  "non exist",
