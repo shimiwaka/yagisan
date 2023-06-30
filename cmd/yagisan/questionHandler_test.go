@@ -99,6 +99,11 @@ func TestSendQuestion(t *testing.T) {
 	}
 	db.Create(&box)
 
+	longContext := ""
+	for i := 0; i < 1000; i++ {
+		longContext += "aaaaaaaaaaa"
+	}
+
 	tcs := []SendQuestionTestCase{
 		{
 			Email:        "hoge@hoge.com",
@@ -119,6 +124,13 @@ func TestSendQuestion(t *testing.T) {
 			BoxName:       "unexist",
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "please input email",
+		},
+		{
+			Email:         "hoge@hoge.com",
+			Context:       longContext,
+			BoxName:       "hoge",
+			ExpectStatus:  http.StatusBadRequest,
+			ExpectMessage: "character count is over",
 		},
 	}
 
