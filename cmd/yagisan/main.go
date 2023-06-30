@@ -26,6 +26,7 @@ func main() {
 	r.Get(rootPath+"/confirm/{qToken}", confirmQuestionHandler)
 	r.Post(rootPath+"/box/show", showBoxHandler)
 	r.Post(rootPath+"/box/update", updateBoxHandler)
+	r.Post(rootPath+"/box/profile", profileHandler)
 	r.Post(rootPath+"/question/{qToken}", getQuestionHandler)
 
 	http.ListenAndServe(":9999", r)
