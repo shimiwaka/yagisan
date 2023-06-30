@@ -166,6 +166,21 @@ func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	newPassword := fmt.Sprintf("%x", sha512.Sum512([]byte(rawNewPassword)))
 	newDescription := r.Form.Get("newDescription")
 
+	if !regexp.MustCompile("^[0-9a-zA-Z_]+$").MatchString(newUsername) {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("username must be only alphabet, number and _.")
+	}
+
+	if len(rawNewPassword) < 8 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("password must be at least 8 characters")
+	}
+
+	if len(newUsername) < 3 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("username must be at least 3 characters")
+	}
+
 	if box.Email != newEmail && newEmail != "" {
 		err = db.Model(&box).Update("email", newEmail).Error
 		if err != nil {
