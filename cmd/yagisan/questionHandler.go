@@ -39,12 +39,12 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("please input email")
 	}
-	
+
 	if len(context) > 10000 {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("character count is over")
 	}
- 
+
 	box := schema.Box{}
 	err = db.First(&box, "username = ?", boxName).Error
 	if err != nil {

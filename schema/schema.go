@@ -10,6 +10,7 @@ type Box struct {
 	Password    string `json:"password"`
 	Email       string `jsoin:"email" gorm:"unique"`
 	Description string `json:"description"`
+	SecureMode  bool   `json:"secure_mode"`
 }
 
 type Question struct {

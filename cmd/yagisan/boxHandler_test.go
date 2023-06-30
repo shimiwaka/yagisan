@@ -1,13 +1,13 @@
 package main
 
 import (
+	"crypto/sha512"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"crypto/sha512"
 	"net/url"
-	"testing"
 	"regexp"
+	"testing"
 
 	"github.com/jinzhu/gorm"
 
@@ -38,14 +38,14 @@ type ShowBoxTestCase struct {
 }
 
 type UpdateTestCase struct {
-	NewEmail         string
-	NewUserName      string
-	NewPassword      string
-	NewDescription   string
-	AccessToken  string
-	Password	string
-	ExpectStatus  int
-	ExpectMessage string
+	NewEmail       string
+	NewUserName    string
+	NewPassword    string
+	NewDescription string
+	AccessToken    string
+	Password       string
+	ExpectStatus   int
+	ExpectMessage  string
 }
 
 func doRegisterTest(t *testing.T, db *gorm.DB, tc RegisterTestCase) {
@@ -284,7 +284,7 @@ func TestShowBox(t *testing.T) {
 	}
 }
 
-func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase){
+func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase) {
 	assert := assert.New(t)
 
 	values := url.Values{}
@@ -323,15 +323,15 @@ func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase){
 			db.First(&box, "id = ?", accessToken.Box)
 
 			if tc.NewEmail != "" {
-				assert.Equal(tc.NewEmail, box.Email)				
+				assert.Equal(tc.NewEmail, box.Email)
 			}
 
 			if tc.NewUserName != "" {
-				assert.Equal(tc.NewUserName, box.Username)				
+				assert.Equal(tc.NewUserName, box.Username)
 			}
 
 			if tc.NewPassword != "" {
-				assert.Equal(fmt.Sprintf("%x", sha512.Sum512([]byte(tc.NewPassword))), box.Password)				
+				assert.Equal(fmt.Sprintf("%x", sha512.Sum512([]byte(tc.NewPassword))), box.Password)
 			}
 
 			assert.Equal(tc.NewDescription, box.Description)
@@ -371,55 +371,55 @@ func TestUpdate(t *testing.T) {
 
 	tcs := []UpdateTestCase{
 		{
-			AccessToken: "DUMMY",
-			NewEmail: "new@email.com",
-			Password: "xxxxxxxx",
+			AccessToken:  "DUMMY",
+			NewEmail:     "new@email.com",
+			Password:     "xxxxxxxx",
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			AccessToken: "DUMMY",
-			NewUserName: "fuga",
-			Password: "xxxxxxxx",
+			AccessToken:  "DUMMY",
+			NewUserName:  "fuga",
+			Password:     "xxxxxxxx",
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			AccessToken: "DUMMY",
+			AccessToken:    "DUMMY",
 			NewDescription: "I Love U.",
-			Password: "xxxxxxxx",
+			Password:       "xxxxxxxx",
+			ExpectStatus:   http.StatusOK,
+		},
+		{
+			AccessToken:  "DUMMY",
+			NewPassword:  "yyyyyyyy",
+			Password:     "xxxxxxxx",
 			ExpectStatus: http.StatusOK,
 		},
 		{
-			AccessToken: "DUMMY",
-			NewPassword: "yyyyyyyy",
-			Password: "xxxxxxxx",
-			ExpectStatus: http.StatusOK,
-		},
-		{
-			AccessToken: "DUMMY",
-			NewEmail: "new2@email.com",
-			NewUserName: "piyo",
+			AccessToken:    "DUMMY",
+			NewEmail:       "new2@email.com",
+			NewUserName:    "piyo",
 			NewDescription: "I Love U too.",
-			NewPassword: "zzzzzzzz",
-			Password: "yyyyyyyy",
-			ExpectStatus: http.StatusOK,
+			NewPassword:    "zzzzzzzz",
+			Password:       "yyyyyyyy",
+			ExpectStatus:   http.StatusOK,
 		},
 		{
-			AccessToken: "DUMMY!!!!!!!",
-			Password: "zzzzzzzz",
-			ExpectStatus: http.StatusBadRequest,
+			AccessToken:   "DUMMY!!!!!!!",
+			Password:      "zzzzzzzz",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "invalid access token",
 		},
 		{
-			AccessToken: "DUMMY",
-			Password: "aaaaaaa",
-			ExpectStatus: http.StatusBadRequest,
+			AccessToken:   "DUMMY",
+			Password:      "aaaaaaa",
+			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "password is wrong",
 		},
 		{
-			AccessToken: "DUMMY",
-			NewEmail: "fuga@hoge.com",
-			Password: "zzzzzzzz",
-			ExpectStatus: http.StatusInternalServerError,
+			AccessToken:   "DUMMY",
+			NewEmail:      "fuga@hoge.com",
+			Password:      "zzzzzzzz",
+			ExpectStatus:  http.StatusInternalServerError,
 			ExpectMessage: "DB error occured",
 		},
 	}
