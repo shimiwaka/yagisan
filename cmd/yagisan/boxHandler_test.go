@@ -439,9 +439,15 @@ func TestProfile(t *testing.T) {
 		Username:    "hoge",
 		Email:       "hoge@hoge.com",
 		Description: "Please give me questions.",
-		SecureMode:	true,
+		SecureMode:  true,
 	}
 	db.Create(&box)
+
+	accessToken := schema.AccessToken {
+		Box: box.ID,
+		Token: "DUMMY",
+	}
+	db.Create(&accessToken)
 
 	assert := assert.New(t)
 
@@ -463,7 +469,27 @@ func TestProfile(t *testing.T) {
 	body := string(raw)
 
 	assert.Equal(resp.StatusCode, http.StatusOK)
-	assert.Equal(body, "{\"success\":true,\"username\":\"hoge\",\"description\":\"Please give me questions.\",\"SecureMode\":true,\"message\":\"\"}\n")
+	assert.Equal("{\"success\":true,\"username\":\"hoge\",\"email\":\"\",\"description\":\"Please give me questions.\",\"SecureMode\":true,\"message\":\"\"}\n", body)
+
+	values = url.Values{}
+	values.Set("username", "hoge")
+	values.Set("accessToken", "DUMMY")
+
+	r = httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	err = profile(db, w, r)
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+
+	resp = w.Result()
+	raw, _ = io.ReadAll(resp.Body)
+	body = string(raw)
+
+	assert.Equal(resp.StatusCode, http.StatusOK)
+	assert.Equal("{\"success\":true,\"username\":\"hoge\",\"email\":\"hoge@hoge.com\",\"description\":\"Please give me questions.\",\"SecureMode\":true,\"message\":\"\"}\n", body)
 
 	values = url.Values{}
 	values.Set("username", "fuga")

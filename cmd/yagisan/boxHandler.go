@@ -221,9 +221,18 @@ func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		return errors.New("parse error occured")
 	}
 	username := r.Form.Get("username")
+	accessToken := r.Form.Get("accessToken")
 
 	box := schema.Box{}
-	err = db.First(&box, "username = ?", username).Error
+	if accessToken != "" {
+		box = validateAccessToken(db, accessToken)
+		if box.ID == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			return errors.New("invalid access token")
+		}
+	} else {
+		err = db.First(&box, "username = ?", username).Error
+	}
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -235,6 +244,10 @@ func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		Username:    username,
 		Description: box.Description,
 		SecureMode:  box.SecureMode,
+	}
+
+	if box.Username == username && accessToken != "" {
+		resp.Email = box.Email
 	}
 
 	var buf bytes.Buffer

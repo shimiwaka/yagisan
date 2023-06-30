@@ -24,6 +24,7 @@ type ShowBoxResponse struct {
 type ProfileResponse struct {
 	Success     bool   `json:"success"`
 	Username    string `json:"username"`
+	Email       string `json:"email"`
 	Description string `json:"description"`
 	SecureMode  bool   `jsoin:"secure_mode"`
 	Message     string `json:"message"`
