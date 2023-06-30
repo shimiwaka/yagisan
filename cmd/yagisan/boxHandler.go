@@ -213,3 +213,48 @@ func updateBoxHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
 	}
 }
+
+func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("parse error occured")
+	}
+	username := r.Form.Get("username")
+
+	box := schema.Box{}
+	err = db.First(&box, "username = ?", username).Error
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("invalid username")
+	}
+
+	resp := schema.ProfileResponse{
+		Success: true,
+		Username: username,
+		Description: box.Description,
+		SecureMode: box.SecureMode,
+	}
+
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	if err := enc.Encode(&resp); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("failed to encode json")
+	}
+
+	fmt.Fprint(w, buf.String())
+	return nil
+}
+
+func profileHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	err := profile(db, w, r)
+
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+}

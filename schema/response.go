@@ -21,6 +21,13 @@ type ShowBoxResponse struct {
 	Questions []Question `json:"questions"`
 }
 
+type ProfileResponse struct {
+	Success     bool   `json:"success"`
+	Username    string `json:"username"`
+	Description string `json:"description"`
+	SecureMode  bool   `jsoin:"secure_mode"`
+}
+
 type SendQuestionResponse struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
