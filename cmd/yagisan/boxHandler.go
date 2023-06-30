@@ -230,6 +230,7 @@ func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 			w.WriteHeader(http.StatusBadRequest)
 			return errors.New("invalid access token")
 		}
+		username = box.Username
 	} else {
 		err = db.First(&box, "username = ?", username).Error
 	}
@@ -246,7 +247,7 @@ func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		SecureMode:  box.SecureMode,
 	}
 
-	if box.Username == username && accessToken != "" {
+	if accessToken != "" {
 		resp.Email = box.Email
 	}
 

@@ -472,7 +472,6 @@ func TestProfile(t *testing.T) {
 	assert.Equal("{\"success\":true,\"username\":\"hoge\",\"email\":\"\",\"description\":\"Please give me questions.\",\"SecureMode\":true,\"message\":\"\"}\n", body)
 
 	values = url.Values{}
-	values.Set("username", "hoge")
 	values.Set("accessToken", "DUMMY")
 
 	r = httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
