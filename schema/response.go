@@ -26,6 +26,7 @@ type ProfileResponse struct {
 	Username    string `json:"username"`
 	Description string `json:"description"`
 	SecureMode  bool   `jsoin:"secure_mode"`
+	Message     string `json:"message"`
 }
 
 type SendQuestionResponse struct {

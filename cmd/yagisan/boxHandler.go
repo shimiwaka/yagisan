@@ -231,10 +231,10 @@ func profile(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resp := schema.ProfileResponse{
-		Success: true,
-		Username: username,
+		Success:     true,
+		Username:    username,
 		Description: box.Description,
-		SecureMode: box.SecureMode,
+		SecureMode:  box.SecureMode,
 	}
 
 	var buf bytes.Buffer

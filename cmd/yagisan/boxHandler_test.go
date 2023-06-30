@@ -295,7 +295,7 @@ func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase) {
 	values.Set("newDescription", tc.NewDescription)
 	values.Set("newPassword", tc.NewPassword)
 
-	r := httptest.NewRequest(http.MethodPost, "http://example.com/profile/update", strings.NewReader(values.Encode()))
+	r := httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	w := httptest.NewRecorder()
@@ -427,4 +427,57 @@ func TestUpdate(t *testing.T) {
 	for _, tc := range tcs {
 		doUpdateTest(t, db, tc)
 	}
+}
+
+func TestProfile(t *testing.T) {
+	db := connector.ConnectTestDB()
+	defer db.Close()
+
+	initializeDB(db)
+
+	box := schema.Box{
+		Username:    "hoge",
+		Email:       "hoge@hoge.com",
+		Description: "Please give me questions.",
+		SecureMode:	true,
+	}
+	db.Create(&box)
+
+	assert := assert.New(t)
+
+	values := url.Values{}
+	values.Set("username", "hoge")
+
+	r := httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w := httptest.NewRecorder()
+	err := profile(db, w, r)
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+
+	resp := w.Result()
+	defer resp.Body.Close()
+	raw, _ := io.ReadAll(resp.Body)
+	body := string(raw)
+
+	assert.Equal(resp.StatusCode, http.StatusOK)
+	assert.Equal(body, "{\"success\":true,\"username\":\"hoge\",\"description\":\"Please give me questions.\",\"SecureMode\":true,\"message\":\"\"}\n")
+
+	values = url.Values{}
+	values.Set("username", "fuga")
+
+	r = httptest.NewRequest(http.MethodPost, "http://example.com/box/update", strings.NewReader(values.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w = httptest.NewRecorder()
+	err = profile(db, w, r)
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+
+	resp = w.Result()
+
+	assert.Equal(resp.StatusCode, http.StatusBadRequest)
 }
