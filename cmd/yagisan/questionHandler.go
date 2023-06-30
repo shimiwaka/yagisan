@@ -35,11 +35,6 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	context := r.Form.Get("context")
 	boxName := r.Form.Get("boxname")
 
-	if rawEmail == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return errors.New("please input email")
-	}
-
 	if len(context) > 10000 {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("character count is over")
@@ -57,6 +52,17 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 
 	token := fmt.Sprintf("%x", md5.Sum(bytes))
 
+	visible := true
+
+	if box.SecureMode {
+		visible = false
+
+		if rawEmail == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return errors.New("please input email")
+		}	
+	}
+
 	question := schema.Question{
 		Box:       box.ID,
 		Email:     email,
@@ -64,13 +70,13 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		UserAgent: "",
 		Body:      context,
 		Token:     token,
-		Visible:   false,
+		Visible:   visible,
 	}
 	db.Create(&question)
 
 	testMode := os.Getenv("TEST_MODE")
 
-	if testMode != "1" {
+	if testMode != "1" && box.SecureMode {
 		settings := schema.Settings{}
 		b, _ := os.ReadFile("config.yaml")
 		yaml.Unmarshal(b, &settings)
