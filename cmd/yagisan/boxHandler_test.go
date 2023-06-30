@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"regexp"
 
 	"github.com/jinzhu/gorm"
 
@@ -193,6 +194,8 @@ func doShowBoxTest(t *testing.T, db *gorm.DB, tc ShowBoxTestCase) {
 		_ = json.Unmarshal(raw, &r)
 
 		if resp.StatusCode == http.StatusOK {
+			re := regexp.MustCompile("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{2}:[0-9]{2}")
+			body = re.ReplaceAllString(body, "-")
 			assert.Equal(tc.ExpectBody, body)
 		}
 	}
@@ -245,7 +248,7 @@ func TestShowBox(t *testing.T) {
 		{
 			AccessToken:  "DUMMY",
 			ExpectStatus: http.StatusOK,
-			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[{\"body\":\"I Love U(2).\",\"token\":\"\"},{\"body\":\"I Love U(1).\",\"token\":\"\"},{\"body\":\"I Love U(0).\",\"token\":\"\"}]}\n",
+			ExpectBody:   "{\"success\":true,\"username\":\"hoge\",\"questions\":[{\"ID\":3,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"body\":\"I Love U(2).\",\"token\":\"\"},{\"ID\":2,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"body\":\"I Love U(1).\",\"token\":\"\"},{\"ID\":1,\"CreatedAt\":\"-\",\"UpdatedAt\":\"-\",\"DeletedAt\":null,\"body\":\"I Love U(0).\",\"token\":\"\"}]}\n",
 		},
 		{
 			AccessToken:  "non exist",
