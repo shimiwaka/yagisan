@@ -68,7 +68,7 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		}	
 	}
 
-	rawIP := r.Header.Get("X-FORWARDED-FOR")
+	rawIP := r.RemoteAddr
 	IP := fmt.Sprintf("%x", sha512.Sum512([]byte(rawIP)))
 
 	question := schema.Question{
