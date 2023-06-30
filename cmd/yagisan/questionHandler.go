@@ -35,6 +35,11 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 	context := r.Form.Get("context")
 	boxName := r.Form.Get("boxname")
 
+	if context == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("context is blank")
+	}
+
 	if len(context) > 10000 {
 		w.WriteHeader(http.StatusBadRequest)
 		return errors.New("character count is over")
