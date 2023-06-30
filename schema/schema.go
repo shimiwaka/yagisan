@@ -17,8 +17,8 @@ type Question struct {
 	gorm.Model
 	Box       uint   `json:"-"`
 	Email     string `json:"-"`
-	IP        string `json:"-"`
-	UserAgent string `json:"-"`
+	IP        string `json:"ip"`
+	UserAgent string `json:"user_agent"`
 	Body      string `json:"body"`
 	Token     string `json:"token"`
 	Visible   bool   `json:"-"`

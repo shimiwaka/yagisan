@@ -91,13 +91,23 @@ func TestSendQuestion(t *testing.T) {
 
 	initializeDB(db)
 
-	box := schema.Box{
+	box1 := schema.Box{
 		Username:    "hoge",
 		Password:    "xxxxxxxxxxx",
 		Email:       "hoge@hoge.com",
 		Description: "",
+		SecureMode: true,
 	}
-	db.Create(&box)
+	db.Create(&box1)
+
+	box2 := schema.Box{
+		Username:    "fuga",
+		Password:    "xxxxxxxxxxx",
+		Email:       "hoge@hoge.com",
+		Description: "",
+		SecureMode: false,
+	}
+	db.Create(&box2)
 
 	longContext := ""
 	for i := 0; i < 1000; i++ {
@@ -121,7 +131,7 @@ func TestSendQuestion(t *testing.T) {
 		{
 			Email:         "",
 			Context:       "I love U.",
-			BoxName:       "unexist",
+			BoxName:       "hoge",
 			ExpectStatus:  http.StatusBadRequest,
 			ExpectMessage: "please input email",
 		},
