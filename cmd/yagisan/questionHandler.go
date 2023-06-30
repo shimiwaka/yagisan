@@ -66,6 +66,8 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 			w.WriteHeader(http.StatusBadRequest)
 			return errors.New("please input email")
 		}	
+	} else {
+		email = ""
 	}
 
 	rawIP := r.RemoteAddr

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+    "unicode/utf8"
 
 	"gopkg.in/yaml.v2"
 
@@ -59,15 +60,22 @@ func questionHandler(w http.ResponseWriter, r *http.Request) {
 	bodys := strings.Split(question.Body, "\n")
 	answerBodys := strings.Split(answer.Body, "\n")
 
+	shortAnswerBody := answer.Body
+	if utf8.RuneCountInString(shortAnswerBody) > 100 {
+		shortAnswerBody = string([]rune(answer.Body)[:100])
+	}
+
 	if err := t.Execute(w, struct {
 		Token      string
 		AnswerBody []string
+		ShortAnswerBody string
 		Body       []string
 		MainUrl    string
 		OgpImage   string
 	}{
 		Token:      qToken,
 		AnswerBody: answerBodys,
+		ShortAnswerBody : shortAnswerBody,
 		Body:       bodys,
 		MainUrl:    settings.MainUrl + "/mypage",
 		OgpImage:   settings.SubUrl + "/image/" + qToken,
