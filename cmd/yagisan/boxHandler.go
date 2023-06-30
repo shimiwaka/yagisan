@@ -182,7 +182,7 @@ func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	if box.Password != newPassword && newPassword != "" {
+	if box.Password != newPassword && rawNewPassword != "" {
 		err = db.Model(&box).Update("password", newPassword).Error
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -197,6 +197,8 @@ func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 			return errors.New("DB error occured")
 		}
 	}
+
+	fmt.Fprintf(w, "{\"success\":true}")
 
 	return nil
 }

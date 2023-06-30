@@ -10,6 +10,11 @@ type RegisterResponse struct {
 	Token   string `jsoin:"token"`
 }
 
+type UpdateResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 type ShowBoxResponse struct {
 	Success   bool       `json:"success"`
 	Username  string     `json:"username"`

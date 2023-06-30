@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"crypto/sha512"
 	"net/url"
 	"testing"
 	"regexp"
@@ -34,6 +35,17 @@ type ShowBoxTestCase struct {
 	Page         int
 	ExpectStatus int
 	ExpectBody   string
+}
+
+type UpdateTestCase struct {
+	NewEmail         string
+	NewUserName      string
+	NewPassword      string
+	NewDescription   string
+	AccessToken  string
+	Password	string
+	ExpectStatus  int
+	ExpectMessage string
 }
 
 func doRegisterTest(t *testing.T, db *gorm.DB, tc RegisterTestCase) {
@@ -269,5 +281,150 @@ func TestShowBox(t *testing.T) {
 
 	for _, tc := range tcs {
 		doShowBoxTest(t, db, tc)
+	}
+}
+
+func doUpdateTest(t *testing.T, db *gorm.DB, tc UpdateTestCase){
+	assert := assert.New(t)
+
+	values := url.Values{}
+	values.Set("accessToken", tc.AccessToken)
+	values.Set("password", tc.Password)
+	values.Set("newEmail", tc.NewEmail)
+	values.Set("newUsername", tc.NewUserName)
+	values.Set("newDescription", tc.NewDescription)
+	values.Set("newPassword", tc.NewPassword)
+
+	r := httptest.NewRequest(http.MethodPost, "http://example.com/profile/update", strings.NewReader(values.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	w := httptest.NewRecorder()
+	err := updateBox(db, w, r)
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+
+	resp := w.Result()
+	defer resp.Body.Close()
+	raw, _ := io.ReadAll(resp.Body)
+	body := string(raw)
+
+	assert.Equal(tc.ExpectStatus, resp.StatusCode)
+
+	if body != "" {
+		r := schema.UpdateResponse{}
+		_ = json.Unmarshal(raw, &r)
+
+		if resp.StatusCode == http.StatusOK {
+			accessToken := schema.AccessToken{}
+			db.First(&accessToken, "token = ?", tc.AccessToken)
+
+			box := schema.Box{}
+			db.First(&box, "id = ?", accessToken.Box)
+
+			if tc.NewEmail != "" {
+				assert.Equal(tc.NewEmail, box.Email)				
+			}
+
+			if tc.NewUserName != "" {
+				assert.Equal(tc.NewUserName, box.Username)				
+			}
+
+			if tc.NewPassword != "" {
+				assert.Equal(fmt.Sprintf("%x", sha512.Sum512([]byte(tc.NewPassword))), box.Password)				
+			}
+
+			assert.Equal(tc.NewDescription, box.Description)
+		} else {
+			assert.Equal(tc.ExpectMessage, r.Message)
+		}
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	db := connector.ConnectTestDB()
+	defer db.Close()
+
+	initializeDB(db)
+
+	box1 := schema.Box{
+		Username:    "hoge",
+		Password:    fmt.Sprintf("%x", sha512.Sum512([]byte("xxxxxxxx"))),
+		Email:       "hoge@hoge.com",
+		Description: "",
+	}
+	db.Create(&box1)
+
+	box2 := schema.Box{
+		Username:    "hoge2",
+		Password:    fmt.Sprintf("%x", sha512.Sum512([]byte("xxxxxxxx"))),
+		Email:       "fuga@hoge.com",
+		Description: "",
+	}
+	db.Create(&box2)
+
+	accessToken := schema.AccessToken{
+		Box:   box1.ID,
+		Token: "DUMMY",
+	}
+	db.Create(&accessToken)
+
+	tcs := []UpdateTestCase{
+		{
+			AccessToken: "DUMMY",
+			NewEmail: "new@email.com",
+			Password: "xxxxxxxx",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			AccessToken: "DUMMY",
+			NewUserName: "fuga",
+			Password: "xxxxxxxx",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			AccessToken: "DUMMY",
+			NewDescription: "I Love U.",
+			Password: "xxxxxxxx",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			AccessToken: "DUMMY",
+			NewPassword: "yyyyyyyy",
+			Password: "xxxxxxxx",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			AccessToken: "DUMMY",
+			NewEmail: "new2@email.com",
+			NewUserName: "piyo",
+			NewDescription: "I Love U too.",
+			NewPassword: "zzzzzzzz",
+			Password: "yyyyyyyy",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			AccessToken: "DUMMY!!!!!!!",
+			Password: "zzzzzzzz",
+			ExpectStatus: http.StatusBadRequest,
+			ExpectMessage: "invalid access token",
+		},
+		{
+			AccessToken: "DUMMY",
+			Password: "aaaaaaa",
+			ExpectStatus: http.StatusBadRequest,
+			ExpectMessage: "password is wrong",
+		},
+		{
+			AccessToken: "DUMMY",
+			NewEmail: "fuga@hoge.com",
+			Password: "zzzzzzzz",
+			ExpectStatus: http.StatusInternalServerError,
+			ExpectMessage: "DB error occured",
+		},
+	}
+
+	for _, tc := range tcs {
+		doUpdateTest(t, db, tc)
 	}
 }
