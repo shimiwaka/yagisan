@@ -136,3 +136,78 @@ func showBoxHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
 	}
 }
+
+func updateBox(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return errors.New("parse error occured")
+	}
+
+	accessToken := r.Form.Get("accessToken")
+	box := validateAccessToken(db, accessToken)
+
+	if box.ID == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("invalid access token")
+	}
+
+	rawPassword := r.Form.Get("password")
+	password := fmt.Sprintf("%x", sha512.Sum512([]byte(rawPassword)))
+
+	if box.Password != password {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("password is wrong")
+	}
+
+	newEmail := r.Form.Get("newEmail")
+	newUsername := r.Form.Get("newUsername")
+	rawNewPassword := r.Form.Get("newPassword")
+	newPassword := fmt.Sprintf("%x", sha512.Sum512([]byte(rawNewPassword)))
+	newDescription := r.Form.Get("newDescription")
+
+	if box.Email != newEmail && newEmail != "" {
+		err = db.Model(&box).Update("email", newEmail).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	if box.Username != newUsername && newUsername != "" {
+		err = db.Model(&box).Update("username", newUsername).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	if box.Password != newPassword && newPassword != "" {
+		err = db.Model(&box).Update("password", newPassword).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	if box.Description != newDescription {
+		err = db.Model(&box).Update("description", newDescription).Error
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return errors.New("DB error occured")
+		}
+	}
+
+	return nil
+}
+
+func updateBoxHandler(w http.ResponseWriter, r *http.Request) {
+	db := connector.ConnectDB()
+	defer db.Close()
+
+	err := updateBox(db, w, r)
+
+	if err != nil {
+		fmt.Fprintf(w, "{\"success\":false,\"message\":\"%s\"}", err)
+	}
+}
