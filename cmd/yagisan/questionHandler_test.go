@@ -80,7 +80,11 @@ func doSendQuestionTest(t *testing.T, db *gorm.DB, tc SendQuestionTestCase) {
 			db.First(&question, "box = ?", box.ID)
 
 			assert.Equal(tc.Context, question.Body)
-			assert.Equal(false, question.Visible)
+			if box.SecureMode {
+				assert.Equal(false, question.Visible)
+			} else {
+				assert.Equal(true, question.Visible)
+			}
 		}
 	}
 }
@@ -103,7 +107,7 @@ func TestSendQuestion(t *testing.T) {
 	box2 := schema.Box{
 		Username:    "fuga",
 		Password:    "xxxxxxxxxxx",
-		Email:       "hoge@hoge.com",
+		Email:       "fuga@hoge.com",
 		Description: "",
 		SecureMode: false,
 	}
@@ -119,6 +123,12 @@ func TestSendQuestion(t *testing.T) {
 			Email:        "hoge@hoge.com",
 			Context:      "I love U.",
 			BoxName:      "hoge",
+			ExpectStatus: http.StatusOK,
+		},
+		{
+			Email:        "",
+			Context:      "I love U.",
+			BoxName:      "fuga",
 			ExpectStatus: http.StatusOK,
 		},
 		{
