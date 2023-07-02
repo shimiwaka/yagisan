@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
-	// "time"
+	"time"
 
 	// "github.com/go-chi/chi"
 	"github.com/jinzhu/gorm"
@@ -33,12 +33,25 @@ func login(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 		return errors.New("lack of parameters")
 	}
 
+	fails := []schema.LoginFailLog{}
+	db.Find(&fails, "username = ? and created_at >= ?", username, time.Now().Add(time.Minute * -30))
+
+	if len(fails) > 2 {
+		w.WriteHeader(http.StatusBadRequest)
+		return errors.New("account is locked")
+	}
+
 	box := schema.Box{}
 
 	err = db.First(&box, "username = ? and password = ?", username, password).Error
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+
+		fail := schema.LoginFailLog{
+			Username: username,
+		}
+		db.Create(&fail)
 		return err
 	}
 

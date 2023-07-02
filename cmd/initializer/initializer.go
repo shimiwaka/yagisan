@@ -56,5 +56,8 @@ func main() {
 	// db.Exec("DROP TABLE passwordresettokens")
 	db.AutoMigrate(&schema.PasswordResetToken{})
 
+	// db.Exec("DROP TABLE loginfaillogs")
+	db.AutoMigrate(&schema.LoginFailLog{})
+
 	fmt.Println("Successfully initialized.")
 }

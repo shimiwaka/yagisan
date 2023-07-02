@@ -54,3 +54,8 @@ type PasswordResetToken struct {
 	Box        uint   `json:"box"`
 	Token      string `json:"token"`
 }
+
+type LoginFailLog struct {
+	gorm.Model `json:"-"`
+	Username     string   `json:"username"`
+ }
