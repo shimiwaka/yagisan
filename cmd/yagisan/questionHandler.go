@@ -86,22 +86,39 @@ func sendQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error {
 
 	testMode := os.Getenv("TEST_MODE")
 
-	if testMode != "1" && box.SecureMode {
+	if testMode != "1" {
 		settings := schema.Settings{}
 		b, _ := os.ReadFile("config.yaml")
 		yaml.Unmarshal(b, &settings)
 
 		from := settings.MailAddress
-		recipients := []string{rawEmail}
-		subject := "ゆうびんやぎさん"
-		body := fmt.Sprintf("以下のリンクにアクセスすると質問が送信されます：\n\n%s/confirm/%s", settings.ServiceHost, token)
+		subject := "やぎさんゆうびん"
 
+		recipients := []string{}
+		body := ""
 		auth := smtp.CRAMMD5Auth(settings.MailAddress, settings.MailPassword)
-		msg := []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
+		msg := []byte{}
 
-		err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg)
-		if err != nil {
-			return err
+		if box.SecureMode {
+			recipients = []string{rawEmail}
+			body = fmt.Sprintf("以下のリンクにアクセスすると質問が送信されます：\n\n%s/confirm/%s", settings.ServiceHost, token)
+
+			msg = []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
+
+			err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg)
+			if err != nil {
+				return err
+			}
+		} else {
+			recipients = []string{box.Email}
+			body = fmt.Sprintf("新しい質問が届きました！\n\n%s/mypage", settings.ServiceHost)
+
+			msg = []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
+
+			err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -141,6 +158,37 @@ func confirmQuestion(db *gorm.DB, w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 	db.Model(&question).Update("visible", true)
+	testMode := os.Getenv("TEST_MODE")
+
+	if testMode != "1" {
+		box := schema.Box{}
+		err = db.First(&box, "id = ?", question.Box).Error
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return err
+		}
+
+		settings := schema.Settings{}
+		b, _ := os.ReadFile("config.yaml")
+		yaml.Unmarshal(b, &settings)
+
+		from := settings.MailAddress
+		subject := "やぎさんゆうびん"
+
+		auth := smtp.CRAMMD5Auth(settings.MailAddress, settings.MailPassword)
+
+		recipients := []string{box.Email}
+		body := fmt.Sprintf("新しい質問が届きました！\n\n%s/mypage", settings.ServiceHost)
+
+		msg := []byte(strings.ReplaceAll(fmt.Sprintf("To: %s\nSubject: %s\n\n%s", strings.Join(recipients, ","), subject, body), "\n", "\r\n"))
+
+		err = smtp.SendMail(fmt.Sprintf("%s:%d", settings.MailHost, 587), auth, from, recipients, msg)
+		if err != nil {
+			return err
+		}
+	}
+
 	fmt.Fprintf(w, "{\"success\":true}")
 
 	return nil
