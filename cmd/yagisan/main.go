@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
+	// "net/http"
 
-	// "net/http/cgi"
+	"net/http/cgi"
 	"os"
 
 	"github.com/go-chi/chi"
@@ -29,8 +29,8 @@ func main() {
 	r.Post(rootPath+"/box/profile", profileHandler)
 	r.Post(rootPath+"/question/{qToken}", getQuestionHandler)
 
-	http.ListenAndServe(":9999", r)
-	// cgi.Serve(r)
+	// http.ListenAndServe(":9999", r)
+	cgi.Serve(r)
 }
 
 func errorMessage(s string) string {

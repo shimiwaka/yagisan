@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	// "net/http/cgi"
+	"net/http/cgi"
 	"os"
 
 	"github.com/go-chi/chi"
@@ -23,6 +23,6 @@ func main() {
 		},
 	)
 
-	http.ListenAndServe(":9998", r)
-	// cgi.Serve(r)
+	// http.ListenAndServe(":9998", r)
+	cgi.Serve(r)
 }

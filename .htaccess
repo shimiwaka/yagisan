@@ -1,0 +1,3 @@
+<Files ~ "(\.yaml)$">
+  deny from all
+</Files>
