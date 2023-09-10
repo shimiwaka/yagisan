@@ -42,3 +42,9 @@ textarea {
   border-width: 1px;
   border-color: #0000cd;
 }
+
+@media only screen and (max-device-width : 480px) {
+  .Box {
+    width: 80%;
+  }
+}
